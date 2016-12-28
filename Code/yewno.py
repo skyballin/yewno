@@ -13,7 +13,7 @@ from gutenberg.query import get_etexts
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 
-#Global variables
+#Global variables for sentence splitting
 caps = "([A-Z])"
 prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
 suffixes = "(Inc|Ltd|Jr|Sr|Co)"
@@ -25,8 +25,9 @@ class Yewno():
 	def __init__(self, title=0, author=0):
 		self.title = title
 		self.author = author
-		#self.get_text(self.title, self.author)
+		#self.get_text(self.title, self.author) #This is the gutenberg method
 		self.data_path = '../Data/'
+		self.save_path = '../Output/'
 		self.final_df = self.controller()
 
 	def controller(self):
@@ -35,7 +36,7 @@ class Yewno():
 		for book in books:
 			print(book)
 			temp = self.open_text(self.data_path+book)
-			temp.to_csv('cleaned_'+book+'.csv', index=False)
+			temp.to_csv(self.save_path+'cleaned_'+book+'.csv', index=False)
 			book_df = book_df.append(temp)
 		return(book_df)
 
@@ -138,7 +139,6 @@ class Yewno():
 		Output:
 		The likeliehoods of all languages per sentence
 		"""
-		#input_text = self.my_encoder(input_text)
 		input_words = nltk.wordpunct_tokenize(input_text)
 
 		likelihood = {}
@@ -149,4 +149,4 @@ class Yewno():
 
 if __name__ == '__main__':
 	yewno = Yewno()
-	yewno.final_df.to_csv('all_books.csv', index=False)
+	yewno.final_df.to_csv(yewno.save_path+'all_books.csv', index=False)
